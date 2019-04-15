@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +25,12 @@ namespace Lecoati.LeBlender.Extension.Models
 
         [JsonProperty("value")]
         public object Value { get; set; }
+
+        [JsonProperty("mandatory")]
+        public bool Mandatory { get; set; }
+
+        [JsonProperty("regex")]
+        public String Regex { get; set; }
 
         public T GetValue<T>()
         {
