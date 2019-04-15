@@ -63,17 +63,19 @@
         $scope.preview = "";
 
         $scope.openListParameter = function () {
-            if ($scope.control.editor.config && $scope.control.editor.config.editors ) {
+            if ($scope.control.editor.config && ($scope.control.editor.config.editors || $scope.control.editor.config.globalEditors)) {
         		var dialog = dialogService.open({
         		    template: '/App_Plugins/LeBlender/editors/leblendereditor/dialogs/parameterconfig.html',
         			show: true,
         			dialogData: {
         				name: $scope.control.editor.name,
         				value: angular.copy($scope.control.value),
+        				global: angular.copy($scope.control.global),
         				config: $scope.control.editor.config
         			},
         			callback: function (data) {
-        				$scope.control.value = data;
+        			    $scope.control.value = data.value;
+        			    $scope.control.global = data.global;
         				$scope.setPreview();
         				if (!$scope.control.guid)
         				    $scope.control.guid = guid()

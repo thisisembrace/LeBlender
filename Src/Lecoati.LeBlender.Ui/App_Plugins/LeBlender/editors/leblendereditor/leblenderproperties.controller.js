@@ -26,6 +26,8 @@
 
         }
 
+        
+
         // remove a property
         $scope.remove = function ($index) {
             $scope.model.value.splice($index, 1);
@@ -33,7 +35,7 @@
 
         // Init again the render and frontView value
         $scope.$on('gridEditorSaving', function () {
-            $scope.model.parentValue.config.frontView = $scope.model.parentValue.render;
+            //$scope.model.parentValue.config.frontView = $scope.model.parentValue.render;
             $scope.model.parentValue.render = "/App_Plugins/LeBlender/editors/leblendereditor/views/Base.cshtml";
         });
 

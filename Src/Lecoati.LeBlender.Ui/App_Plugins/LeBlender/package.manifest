@@ -1,4 +1,4 @@
-﻿{   
+{   
 	"propertyEditors": [
         {
             "name": "Rich text editor",
@@ -62,14 +62,21 @@
         {
             "name": "LeBlender Editor",
             "alias": "leblenderEditor",
-			      "isGridEditor": true,
+			"isGridEditor": true,
             "editor": {
                 "view": "/App_Plugins/LeBlender/editors/leblendereditor/LeBlendereditor.html"
             },
             "prevalues": {
                 "fields": [
-                    {
-                        "label": "Properties",
+                     {
+                        "label": "Global Properties",
+                        "key": "globalEditors",
+                        "description": "LeBlender Global Editor properties",
+                        "view": "/App_Plugins/LeBlender/editors/leblendereditor/leblenderproperties.html",
+                        "advanced": false
+                    },
+                     {
+                        "label": "Item Properties",
                         "key": "editors",
                         "description": "LeBlender Editor properties",
                         "view": "/App_Plugins/LeBlender/editors/leblendereditor/leblenderproperties.html",

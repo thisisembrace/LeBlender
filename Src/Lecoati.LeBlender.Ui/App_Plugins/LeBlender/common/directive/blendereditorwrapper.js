@@ -22,16 +22,16 @@
                     label: $scope.property.$editor ? angular.copy($scope.property.$editor.name) : "",
                     config: $scope.property.$editor ? angular.copy($scope.property.$editor.propretyType.config) : {},
                     validation: {
-                        mandatory:false
+                        mandatory: $scope.property.$editor.mandatory,
+                        regex: $scope.property.$editor.validation
                     },
                     value: angular.copy($scope.property.value),
                     view: initEditorPath($scope.property)
                 }
 
-                $scope.validateMandatory = false;
+                $scope.validateMandatory = true;
 
                 $scope.$watch("model.value", function (newValue, oldValue) {
-                    $scope.property.$valid = $scope.propertyForm.$valid;
 
                     /* TODO HACK FOR TAG PROPERTY EDITOR */
                     if (newValue != undefined && $scope.model.view == "views/propertyeditors/tags/tags.html" && newValue.join) {
@@ -40,10 +40,14 @@
                     else {
                         $scope.property.value = newValue;
                     }
-
                 }, true);
 
+
             }
+
+
+
+
 
         };
     });
