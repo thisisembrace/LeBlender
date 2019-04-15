@@ -1,13 +1,15 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Umbraco.Core;
 using Umbraco.Core.Models;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Web;
+using System.Collections;
 
 namespace Lecoati.LeBlender.Extension.Models
 {
@@ -30,40 +32,27 @@ namespace Lecoati.LeBlender.Extension.Models
         public bool Mandatory { get; set; }
 
         [JsonProperty("regex")]
-        public String Regex { get; set; }
+        public string Regex { get; set; }
 
         public T GetValue<T>()
         {
-
+			var helper = new Helper();
             //var targetContentType = Helper.GetTargetContentType();
-            var targetDataType = Helper.GetTargetDataTypeDefinition(Guid.Parse(DataTypeGuid));
+            var targetDataType = helper.GetTargetDataTypeDefinition(Guid.Parse(DataTypeGuid));
 
-            var propertyType = new PublishedPropertyType(Helper.GetTargetContentType(),
-                new PropertyType(new DataTypeDefinition(targetDataType.PropertyEditorAlias)
-                {
-                    Id = targetDataType.Id
-                }));
+			// This propertyType is a mock, where only the TargetDatatype.EditorAlias is used in x.IsConverter(propertyType)
+			// This constructor is the one with minimal validity checks. See comment in PublishedPropertyType.cs.
+			// But this may change in future, so be prepared to look into the Umbraco source code, if this code fails.
+			var propertyType = new PublishedPropertyType( "pt-" + targetDataType.Id, targetDataType.Id, true, ContentVariation.Nothing, new PropertyValueConverterCollection( new IPropertyValueConverter[] { } ), new PublishedModelFactoryMock(), Current.PublishedContentTypeFactory );
 
-            // Try Umbraco's PropertyValueConverters
-            var converters = PropertyValueConvertersResolver.Current.Converters.ToArray();
-            foreach (var converter in converters.Where(x => x.IsConverter(propertyType)))
-            {
-                // Convert the type using a found value converter
-                var value2 = converter.ConvertDataToSource(propertyType, Value, false);
+			var converters = Current.Factory.GetInstance<PropertyValueConverterCollection>().ToArray();
+			foreach (var converter in converters.Where( x => x.IsConverter( propertyType ) ))
+			{
+				// Since the ConvertDataToSource and ConvertSourceToObject methods don't exist anymore,
+				// We skip the code and try to convert the Value property directly.
 
-                // If the value is of type T, just return it
-                if (value2 is T)
-                    return (T)value2;
-
-                // If ConvertDataToSource failed try ConvertSourceToObject.
-                var value3 = converter.ConvertSourceToObject(propertyType, value2, false);
-
-                // If the value is of type T, just return it
-                if (value3 is T)
-                    return (T)value3;
-
-                // Value is not final value type, so try a regular type conversion aswell
-                var convertAttempt = value2.TryConvertTo<T>();
+				// Value is not final value type, so try a regular type conversion aswell
+				var convertAttempt = Value.TryConvertTo<T>();
                 if (convertAttempt.Success)
                     return convertAttempt.Result;
             }
@@ -79,7 +68,23 @@ namespace Lecoati.LeBlender.Extension.Models
 
         }
 
+		class PublishedModelFactoryMock : IPublishedModelFactory
+		{
+			public IPublishedElement CreateModel( IPublishedElement element )
+			{
+				throw new NotImplementedException();
+			}
 
+			public IList CreateModelList( string alias )
+			{
+				throw new NotImplementedException();
+			}
 
-    }
+			public Type MapModelType( Type type )
+			{
+				throw new NotImplementedException();
+			}
+		}		
+
+	}
 }
