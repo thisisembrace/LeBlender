@@ -17,7 +17,6 @@ namespace Lecoati.LeBlender.Extension
 {
     public static class LeBlenderPartialCacher
     {
-
         public static IHtmlString LeBlenderCachedPartial(
                         this HtmlHelper htmlHelper,
                         string partialViewName,
