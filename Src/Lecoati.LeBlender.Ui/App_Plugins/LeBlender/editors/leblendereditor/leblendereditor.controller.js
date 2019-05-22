@@ -1,5 +1,5 @@
 ﻿angular.module("umbraco").controller("LeBlenderEditor.controller",
-    function ($scope, assetsService, $http, $sce, editorService, $routeParams, umbRequestHelper, leBlenderRequestHelper) {
+    function ($scope, assetsService, $http, dialogService, $routeParams, umbRequestHelper, LeBlenderRequestHelper) {
 
         /***************************************/
         /* legacy adaptor 0.9.15 */
@@ -63,18 +63,19 @@
         $scope.preview = "";
 
         $scope.openListParameter = function () {
-            if ($scope.control.editor.config && $scope.control.editor.config.editors ) {
-        		var dialog = editorService.open({
-        		    view: '/App_Plugins/LeBlender/editors/leblendereditor/dialogs/parameterconfig.html',
+            if ($scope.control.editor.config && ($scope.control.editor.config.editors || $scope.control.editor.config.globalEditors)) {
+        		var dialog = dialogService.open({
+        		    template: '/App_Plugins/LeBlender/editors/leblendereditor/dialogs/parameterconfig.html',
         			show: true,
         			dialogData: {
-						name: $scope.control.editor.name,
-						icon: $scope.control.editor.icon,
+        				name: $scope.control.editor.name,
         				value: angular.copy($scope.control.value),
+        				global: angular.copy($scope.control.global),
         				config: $scope.control.editor.config
         			},
-        			submit: function (data) {
-        				$scope.control.value = data;
+        			callback: function (data) {
+        			    $scope.control.value = data.value;
+        			    $scope.control.global = data.global;
         				$scope.setPreview();
         				if (!$scope.control.guid)
         				    $scope.control.guid = guid()
@@ -106,9 +107,8 @@
             if ($scope.control.editor.config
                 && ($scope.control.value || !$scope.control.editor.config.editors || $scope.control.editor.config.editors.length == 0)
                 && $scope.control.editor.config.renderInGrid && $scope.control.editor.config.renderInGrid != "0") {
-                leBlenderRequestHelper.GetPartialViewResultAsHtmlForEditor($scope.control).then(function (htmlResult) {
-					$scope.preview = htmlResult.data.trim();
-					$scope.allowedPreview = $sce.trustAsHtml($scope.preview);
+                LeBlenderRequestHelper.GetPartialViewResultAsHtmlForEditor($scope.control).success(function (htmlResult) {
+                    $scope.preview = htmlResult;
                 });
             }
         };

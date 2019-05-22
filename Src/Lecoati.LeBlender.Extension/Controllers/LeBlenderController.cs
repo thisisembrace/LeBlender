@@ -5,45 +5,47 @@ using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using Umbraco.Web.Mvc;
-
+using Lecoati.LeBlender.Extension;
 using Lecoati.LeBlender.Extension.Models;
 using Newtonsoft.Json;
 using Umbraco.Web.Editors;
 using Umbraco.Core.Logging;
 using Umbraco.Web;
-using Umbraco.Core.Cache;
 
 namespace Lecoati.LeBlender.Extension.Controllers
 {
     public class LeBlenderController : SurfaceController
     {
-		private readonly ILogger logger;
-		private readonly UmbracoHelper umbracoHelper;
-		private readonly AppCaches appCaches;
-
-		public LeBlenderController( ILogger logger, UmbracoHelper umbracoHelper, AppCaches appCaches )
-		{
-			this.logger = logger;
-			this.umbracoHelper = umbracoHelper;
-			this.appCaches = appCaches;
-		}
-
-		[ChildActionOnly]
+        [ChildActionOnly]
         public ActionResult RenderEditor(string editorAlias, string frontView, LeBlenderModel model)
         {
-
+            var CurrentContent = Helper.GetCurrentContent();
+            var siteNode = CurrentContent.Site();
+            var themeName = "";
+            var viewsRoot = "/views/partials/grid/editors";
+            if (siteNode.HasValue("themeName")) {
+                themeName = siteNode.GetPropertyValue<string>("themeName");
+                //Find the Active Theme, and check if there's a corresponding "Editor" file within the Theme Fodlers that we can use as the front end renderer instead of the generic one. 
+                if (!string.IsNullOrEmpty(themeName))
+                {
+                    if (System.IO.File.Exists(String.Format("{0}/theme/{1}/views/partials/grid/editors/{2}.cshtml", Helper.RootPath(), themeName, Helper.FirstCharToUpper(editorAlias))))
+                    {
+                        viewsRoot = String.Format("/theme/{0}/views/partials/grid/editors", themeName);
+                    }
+                }
+            }
             // Check if the frontView is a custom path
             if (string.IsNullOrEmpty(frontView))
             {
-                frontView = String.Format("/views/partials/grid/editors/{0}.cshtml", Helper.FirstCharToUpper(editorAlias));
+                frontView = String.Format("{0}/{1}.cshtml", viewsRoot,  Helper.FirstCharToUpper(editorAlias));
             }
             else if (frontView.IndexOf("/") < 0)
             {
-                frontView = string.Format("/Views/Partials/Grid/Editors/{0}.cshtml", frontView);
+                frontView = string.Format("{0}/{1}.cshtml", viewsRoot, frontView);
             }
 
             // Look for a custom controller
-            var controllerType = new Helper().GetLeBlenderController(editorAlias);
+            var controllerType = Helper.GetLeBlenderController(editorAlias);
             if (controllerType != null)
             {
 
@@ -77,15 +79,12 @@ namespace Lecoati.LeBlender.Extension.Controllers
                     var actionResult = (ViewResult)controllerType.GetMethod(method).Invoke(controllerInstance, new[] { typeInstance });
 
                     // Return the action result 
-                    if (string.IsNullOrWhiteSpace(actionResult.ViewName))
-                    {
-                    	actionResult.ViewName = frontView;
-                    }
+                    actionResult.ViewName = frontView;
                     return actionResult;
                 }
                 catch (Exception ex)
                 {
-                    this.logger.Error<LeBlenderController>("Could not load LeBlender invoke the custom controller", ex);
+                    LogHelper.Error<LeBlenderController>("Could not load LeBlender invoke the custom controller", ex);
                 }
 
             }

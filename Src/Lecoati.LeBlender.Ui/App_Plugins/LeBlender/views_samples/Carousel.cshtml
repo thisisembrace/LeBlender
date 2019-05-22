@@ -1,10 +1,6 @@
 ﻿
 @inherits UmbracoViewPage<Lecoati.LeBlender.Extension.Models.LeBlenderModel>
 
-@{
-    Layout = "";
-}
-
 @if (Model.Items.Any())
 {
     
@@ -22,13 +18,16 @@
         <div class="carousel-inner" role="listbox">
             @foreach (var item in Model.Items)
             {
-                <div class="item @(Model.Items.IndexOf(item) == 0 ? "active" : "")">
-                    <img src="@(item.GetValue<string>("image") != "" ? Umbraco.TypedMedia(item.GetValue<string>("image")).Url : "http://lorempixel.com/1200/600/sports/" + (Model.Items.IndexOf(item) + 1))" alt="@item.GetValue("title")">
-                    <div class="carousel-caption">
-                        <h3>@item.GetValue("title")</h3>
-                        <p>@item.GetValue("summary")</p>
+                if (item.GetValue<string>("image") > 0)
+                {
+                    <div class="item @(Model.Items.IndexOf(item) == 0 ? "active" : "")">
+                        <img src="@(item.GetValue<string>("image") != "" ? Umbraco.TypedMedia(item.GetValue<string>("image")).Url : "http://lorempixel.com/1200/600/sports/" + (Model.Items.IndexOf(item) + 1))" alt="@item.GetValue("title")">
+                        <div class="carousel-caption">
+                            <h3>@item.GetValue("title")</h3>
+                            <p>@item.GetValue("summary")</p>
+                        </div>
                     </div>
-                </div>
+                }
             }
         </div>
 

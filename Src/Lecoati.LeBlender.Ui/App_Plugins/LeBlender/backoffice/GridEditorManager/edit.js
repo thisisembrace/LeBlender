@@ -1,5 +1,5 @@
 ﻿angular.module("umbraco").controller("leblender.editormanager.edit",
-    function ($scope, assetsService, $http, leBlenderRequestHelper, editorService, $routeParams, notificationsService, navigationService, contentEditingHelper, editorState) {
+    function ($scope, assetsService, $http, LeBlenderRequestHelper, dialogService, $routeParams, notificationsService, navigationService, contentEditingHelper, editorState) {
 
 
         /***************************************/
@@ -62,7 +62,7 @@
         /* Init editor data */
         /***************************************/
         $scope.getSetting = function (editorAlias) {
-            leBlenderRequestHelper.getGridEditors().then(function (response) {
+            LeBlenderRequestHelper.getGridEditors().then(function (response) {
 
                 // init model
                 $scope.editors  = response.data
@@ -82,6 +82,7 @@
                 }
                 else {
                     _.each($scope.editors, function (editor, editorIndex) {
+                        console.log(editor);
                         if (editor.alias === editorAlias) {
                             $scope.legacyAdaptor(editor);
                             angular.extend($scope, {
@@ -129,17 +130,16 @@
                 }
             });
 
-            leBlenderRequestHelper.setGridEditors($scope.editors).then(function (response) {
+            LeBlenderRequestHelper.setGridEditors($scope.editors).then(function (response) {
                 notificationsService.success("Success", $scope.model.value.name + " has been saved");
                 delete $scope.selectedPropertyGridEditor;
                 $scope.getSetting($scope.model.value.alias);
-                var editormanagerForm = angular.element('form[name=editormanagerForm]').scope().editormanagerForm;
                 if ($scope.model.value) {
                     $scope.$broadcast('gridEditorSaved');
-                    editormanagerForm.$dirty = false;
                 }
 
-                if ($routeParams.id == -1) {                    
+                if ($routeParams.id == -1) {
+                    var editormanagerForm = angular.element('form[name=editormanagerForm]').scope().editormanagerForm;
                     editormanagerForm.$dirty = false;
                     contentEditingHelper.redirectToCreatedContent($scope.model.value.alias, true);
                 }
@@ -163,12 +163,21 @@
                 else {
                     $scope.textAreaconfig = "";
                 }
+
+
             }
+            $scope.$watch('textAreaconfig', function () {
+                try {
+                    $scope.model.value.config = JSON.parse($scope.textAreaconfig);
+                } catch (exp) {
+                    //Exception handler
+                };
+            });
         };
 
         // open icon picker
         $scope.openIconPicker = function () {
-            var dialog = editorService.iconPicker({
+            var dialog = dialogService.iconPicker({
                 show: true,
                 callback: function (data) {
                     $scope.model.value.icon = data;
@@ -245,17 +254,6 @@
                 })
             }
         }
-        
-        $scope.configChanged = function (textAreaconfig) {
-            try {
-                var configValue = JSON.parse(textAreaconfig);
-                $scope.model.value.config = configValue;
-            }
-            catch (e)
-            {
-
-            }
-        };
 
         // toCamelCase
         var toCamelCase = function (name) {
@@ -291,8 +289,9 @@
 
         $scope.loaded = false;
 
-        leBlenderRequestHelper.getAllPropertyGridEditors().then(function (data) {
+        LeBlenderRequestHelper.getAllPropertyGridEditors().then(function (data) {
             $scope.propertyGridEditors = data;
             $scope.getSetting($routeParams.id);
         });
+
     });

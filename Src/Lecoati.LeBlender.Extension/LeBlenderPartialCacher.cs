@@ -1,9 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
-using Umbraco.Core.Cache;
+using System.Web.Script.Serialization;
+using System.Text.RegularExpressions;
+using Umbraco.Core;
+using Umbraco.Core.Logging;
+using Umbraco.Web;
 
 namespace Lecoati.LeBlender.Extension
 {
@@ -19,16 +27,11 @@ namespace Lecoati.LeBlender.Extension
                         ViewDataDictionary viewData = null
             )
         {
-			var cache = Umbraco.Core.Composing.Current.AppCaches.RuntimeCache;
-			var finalCacheKey = Helper.BuildCacheKey(guid);
-
-            return cache.GetCacheItem<IHtmlString>(
-                finalCacheKey,
-                () => htmlHelper.Partial(partialViewName, model, viewData),
-                new TimeSpan(0, 0, 0, cachedSeconds),
-                false,
-                CacheItemPriority.NotRemovable //not removable, the same as macros (apparently issue #27610)
-            );
+            var finalCacheKey = Helper.BuildCacheKey(guid);
+            return (IHtmlString)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
+                    finalCacheKey,
+                    () => htmlHelper.Partial(partialViewName, model, viewData),
+                    new TimeSpan(0, 0, 0, cachedSeconds), false);
         }
 
     }

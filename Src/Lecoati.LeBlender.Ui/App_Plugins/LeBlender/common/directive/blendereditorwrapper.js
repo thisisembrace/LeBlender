@@ -32,7 +32,6 @@
                 $scope.validateMandatory = true;
 
                 $scope.$watch("model.value", function (newValue, oldValue) {
-                    $scope.property.$valid = $scope.propertyForm.$valid;
 
                     /* TODO HACK FOR TAG PROPERTY EDITOR */
                     if (newValue != undefined && $scope.model.view == "views/propertyeditors/tags/tags.html" && newValue.join) {
@@ -41,10 +40,14 @@
                     else {
                         $scope.property.value = newValue;
                     }
-
                 }, true);
 
+
             }
+
+
+
+
 
         };
     });
