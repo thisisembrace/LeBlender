@@ -1,40 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2FD72230-180C-4960-B7B3-7B7BEB43A03A}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lecoati.LeBlender.Extension", "Src\Lecoati.LeBlender.Extension\Lecoati.LeBlender.Extension.csproj", "{C1A88503-8062-4992-85AB-8367B2D38630}"
-EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Lecoati.LeBlender.Ui", "http://localhost:65095", "{1CDB21CD-FF88-401D-8CB5-281C5048F529}"
-	ProjectSection(WebsiteProperties) = preProject
-		UseIISExpress = "true"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
-		ProjectReferences = "{c1a88503-8062-4992-85ab-8367b2d38630}|Lecoati.leblender.Extension.dll;"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_65095"
-		Debug.AspNetCompiler.PhysicalPath = "Src\Lecoati.LeBlender.Ui\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_65095\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_65095"
-		Release.AspNetCompiler.PhysicalPath = "Src\Lecoati.LeBlender.Ui\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_65095\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		SlnRelativePath = "Src\Lecoati.LeBlender.Ui\"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lecoati.LeBlender.Web", "Src\Lecoati.LeBlender.Web\Lecoati.LeBlender.Web.csproj", "{7AF50F8E-0DAC-40C6-9327-E7CABEA5F24B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,13 +15,6 @@ Global
 		{C1A88503-8062-4992-85AB-8367B2D38630}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1A88503-8062-4992-85AB-8367B2D38630}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1A88503-8062-4992-85AB-8367B2D38630}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1CDB21CD-FF88-401D-8CB5-281C5048F529}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1CDB21CD-FF88-401D-8CB5-281C5048F529}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{1CDB21CD-FF88-401D-8CB5-281C5048F529}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{7AF50F8E-0DAC-40C6-9327-E7CABEA5F24B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7AF50F8E-0DAC-40C6-9327-E7CABEA5F24B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7AF50F8E-0DAC-40C6-9327-E7CABEA5F24B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7AF50F8E-0DAC-40C6-9327-E7CABEA5F24B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
